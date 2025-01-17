@@ -35,7 +35,7 @@ export async function createUser(username, password) {
         pwHash
     })
     console.log('Inserted user ', insertResult.insertedId)
-    return await userCollection.findOne({ _id: insertResult.insertedId })
+    return await findUserById(insertResult.insertedId)
 }
 
 // returns the user or null if the user is not found or the password doesn't match
