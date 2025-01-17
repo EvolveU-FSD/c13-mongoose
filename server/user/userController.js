@@ -1,11 +1,18 @@
 import { Router } from "express";
 import { createUser, findAllUsers, findUserById } from "./userData.js";
+import { requireBasicAuth } from "../auth/authController.js";
 
 const router = Router()
 
 // get a particular user
-router.get('/:userId', async function (req, res) {
+router.get('/:userId', requireBasicAuth, async function (req, res) {
     const id = req.params.userId
+
+    if (req.user._id != id) {
+        res.sendStatus(403)
+        return
+    }
+
     console.log(req.params)
     try {
         const user = await findUserById(id)
