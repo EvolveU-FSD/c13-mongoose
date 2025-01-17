@@ -1,11 +1,13 @@
 import { Router } from "express";
 import { findConversionById } from "./conversionData.js";
+import { requireBasicAuth } from "../auth/authController.js";
 
 const router = Router()
 
 // get a particular conversion
-router.get('/:conversionId', async function (req, res) {
+router.get('/:conversionId', requireBasicAuth, async function (req, res) {
     const id = req.params.conversionId
+
     console.log(req.params)
     try {
         const conversion = await findConversionById(id)
