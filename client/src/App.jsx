@@ -16,7 +16,7 @@ function AppRoutes() {
         { user && <Route path="my-project" element= { <MyProjectPage /> } /> }
         { user && <Route path="login" element= { <Navigate to='/' /> } /> }
         <Route path="login" element= { <LoginPage /> } />
-        <Route path="*" element={ <Navigate to='/' />} /> */}
+        <Route path="*" element={ <Navigate to='/' />} />
       </Routes>
     )
 }

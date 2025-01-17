@@ -14,12 +14,12 @@ export default function LoginBar() {
 
     function togglePopup() {
         setMenuOpen(!menuOpen)
-    }
+    }  
     return (
         <>
             { user && 
                 <div onClick={togglePopup}>
-                    Hello {user.name}!
+                    Hello {user.username}!
                     { menuOpen && <div className="login-bar-popup">
                         <button onClick={logout}>Logout</button>
                     </div> }

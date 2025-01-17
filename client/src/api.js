@@ -1,5 +1,5 @@
 
-async function fetchOrDie(url) {
+async function getOrDie(url) {
     const httpResponse = await fetch(url)
     if (!httpResponse.ok) {
         throw new Error('Fetch for '+url+' failed: ' + httpResponse.status)
@@ -19,15 +19,31 @@ async function postOrDie(url, body) {
 }
 
 export async function login(username, password) {
-    return {
-        name: username
+    const loginResponse = await fetch('/api/auth/login', {
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({username, password})
+    })
+    if (!loginResponse.ok) {
+        throw new Error('Login failed')
     }
+    const user = await loginResponse.json()
+    if (!user) {
+        throw new Error('Login failed')
+    }
+    return user
+}
+
+export async function logout() {
+    return await getOrDie('/api/auth/logout')
 }
 
 export async function getTractors() {
-    return await fetchOrDie('/api/tractor')
+    return await getOrDie('/api/tractor')
 }
 
 export async function getConversion(conversionId) {
-    return await fetchOrDie('/api/conversion/'+conversionId)
+    return await getOrDie('/api/conversion/'+conversionId)
 }

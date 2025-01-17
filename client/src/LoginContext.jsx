@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { login as apiLogin } from './api'
+import { login as apiLogin, logout as apiLogout } from './api'
 
 const LoginContext = createContext()
 
@@ -10,7 +10,8 @@ export function WithLogin({ children }) {
         return apiLogin(username, password).then(setUser)
     }
 
-    function logout() {
+    async function logout() {
+        await apiLogout()
         setUser(null)
     }
     
