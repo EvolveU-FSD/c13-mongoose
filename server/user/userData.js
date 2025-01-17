@@ -43,7 +43,7 @@ export async function checkPassword(username, password) {
     const userCollection  = await collection('users')
     const user =  await userCollection.findOne({ username })
     if (bcryptjs.compareSync(password, user.pwHash))
-        return user
+        return await findUserByUsername(username)
 }
 
 export async function addConversionToUser(user, conversionId) {
