@@ -36,6 +36,18 @@ export async function createUser(username, password) {
     return await userCollection.findOne({ _id: insertResult.insertedId })
 }
 
+// returns the user or null if the user is not found or the password doesn't match
+export async function checkPassword(username, password) {
+    let user = await findUserByUsername(username)    
+    if (user.neverStoreAPasswordLikeThis === password)
+        return user
+}
+
+export async function addConversionToUser(user, conversionId) {
+    const userCollection  = await collection('users')
+    await userCollection.updateOne({ _id: user._id }, { $set: { conversionId } })    
+}
+
 export async function deleteAllUsers() {
     const userCollection  = await collection('users')
     userCollection.deleteMany()

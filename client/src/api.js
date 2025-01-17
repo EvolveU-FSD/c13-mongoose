@@ -27,3 +27,7 @@ export async function login(username, password) {
 export async function getTractors() {
     return await fetchOrDie('/api/tractor')
 }
+
+export async function getConversion(conversionId) {
+    return await fetchOrDie('/api/conversion/'+conversionId)
+}

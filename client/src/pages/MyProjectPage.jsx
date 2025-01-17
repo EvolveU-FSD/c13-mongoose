@@ -1,20 +1,47 @@
+import { useEffect, useState } from "react";
+import { useUser } from "../LoginContext";
+
 import Header from "../components/Header";
-import myTractor from '../assets/westfalia-combine.jpg'
 
 import "./Page.css"
 import "./MyProjectPage.css"
+import { getConversion } from "../api";
+
 export default function MyProjectPage() {
+    const user = useUser()
+
+    const [ conversion, setConversion ] = useState({
+        orderNumber: '---',
+        status: "loading",
+        expectedCost: '----0',
+        imageUrl: 'http://locahost:5173/src/assets/westfalia-combine.jpg',
+        activityLog: [
+        ]
+    })
+
+    useEffect(() => {
+        getConversion(user.conversionId)
+            .then(setConversion)
+            .catch(error => {
+                setConversion({
+                    ...conversion,
+                    status: 'Load error'
+                })
+            })
+    }, [ user ])
+
     return (<>
         <Header />
         <div className="page-content project-card">
-            <h1>Custom Order #7</h1>
-            <img src={myTractor} />
+            <h1>Custom Order # { conversion.orderNumber }</h1>
+            <img src="http://localhost:5173/src/assets/westfalia-combine.jpg" />
             <table><tbody>
-                <tr><th>Status</th><td>Awaiting Parts</td></tr>
-                <tr><th>Expected Cost</th><td>$17000</td></tr>
+                <tr><th>Status</th><td>{conversion.status}</td></tr>
+                <tr><th>Expected Cost</th><td>${conversion.expectedCost}</td></tr>
                 <tr><th>Activity Log</th><td>
-                    <p>2024-12-01: Truck arrived at assembly facility</p>
-                    <p>2024-11-25: Deposit processed</p>
+                    { conversion.activityLog.map((log, index) => (
+                        <p key={index}>{log.date}: {log.comment}</p>                        
+                    ))}
                 </td></tr>
             </tbody></table>
         </div>

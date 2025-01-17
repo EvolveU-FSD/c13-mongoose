@@ -25,14 +25,7 @@ router.get('/:userId', async function (req, res) {
 // list all users
 router.get('/', async function (req, res) {
     try {
-        let userLocation
-        if (req.query.lat && req.query.lng) {
-            userLocation = {
-                lat: Number.parseFloat(req.query.lat),
-                lng: Number.parseFloat(req.query.lng),
-            }
-        }
-        const users = await findAllUsers(userLocation)
+        const users = await findAllUsers()
         res.send(users)
     }
     catch (error) {

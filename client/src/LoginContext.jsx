@@ -32,4 +32,9 @@ export function WhenNotLoggedIn({children}) {
     return !user && <>{ children }</>
 }
 
+export function useUser() {
+    const { user } = useContext(LoginContext)
+    return user
+}
+
 export default LoginContext
