@@ -8,6 +8,11 @@ const router = Router()
 router.get('/:conversionId', requireBasicAuth, async function (req, res) {
     const id = req.params.conversionId
 
+    if (req.user.conversionId != id) {
+        res.sendStatus(401)
+        return
+    }
+
     console.log(req.params)
     try {
         const conversion = await findConversionById(id)
