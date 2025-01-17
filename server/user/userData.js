@@ -1,22 +1,23 @@
 import { ObjectId } from "mongodb"
 import { collection } from "../db.js"
+import bcryptjs from 'bcryptjs'
 
 export async function findAllUsers() {
     const userCollection = await collection('users')
-    const cursor = await userCollection.find({}) // no query finds everything!
+    const cursor = await userCollection.find({}).project({ pwHash: 0 }) // no query finds everything!
     const users = await cursor.toArray()
     return users
 }
 
 export async function findUserByUsername(username) {
     const userCollection  = await collection('users')
-    const singleUser =  await userCollection.findOne({ username })
+    const singleUser =  await userCollection.findOne({ username }, { projection: { pwHash: 0 }})
     return singleUser
 }
 
 export async function findUserById(id) {
     const userCollection  = await collection('users')
-    const singleUser =  await userCollection.findOne({_id: new ObjectId(id)})
+    const singleUser =  await userCollection.findOne({_id: new ObjectId(id)}, { projection: { pwHash: 0 }})
     return singleUser
 }
 
@@ -28,9 +29,10 @@ export async function createUser(username, password) {
         throw new Error('The user ' + username + ' already exists.')
     }
 
+    const pwHash = bcryptjs.hashSync(password)
     const insertResult = await userCollection.insertOne({
         username,
-        neverStoreAPasswordLikeThis: password
+        pwHash
     })
     console.log('Inserted user ', insertResult.insertedId)
     return await userCollection.findOne({ _id: insertResult.insertedId })
@@ -38,8 +40,9 @@ export async function createUser(username, password) {
 
 // returns the user or null if the user is not found or the password doesn't match
 export async function checkPassword(username, password) {
-    let user = await findUserByUsername(username)    
-    if (user.neverStoreAPasswordLikeThis === password)
+    const userCollection  = await collection('users')
+    const user =  await userCollection.findOne({ username })
+    if (bcryptjs.compareSync(password, user.pwHash))
         return user
 }
 
