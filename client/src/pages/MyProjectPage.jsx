@@ -13,7 +13,7 @@ export default function MyProjectPage() {
     const [ conversion, setConversion ] = useState({
         orderNumber: '---',
         status: "loading",
-        expectedCost: '----0',
+        expectedCost: '-----',
         imageUrl: 'http://locahost:5173/src/assets/westfalia-combine.jpg',
         activityLog: [
         ]
