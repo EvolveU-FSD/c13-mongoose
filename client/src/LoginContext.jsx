@@ -10,8 +10,8 @@ export function WithLogin({ children }) {
         return apiLogin(username, password).then(setUser)
     }
 
-    async function logout() {
-        await apiLogout()
+    function logout() {
+        apiLogout()
         setUser(null)
     }
     

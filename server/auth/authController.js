@@ -52,7 +52,7 @@ router.get('/currentUser', async function (req, res) {
 })
 
 router.get('/logout', async function (req, res) {
-    res.sendStatus(200)
+    res.send({status: 'ok'})
 })
 
 export default router

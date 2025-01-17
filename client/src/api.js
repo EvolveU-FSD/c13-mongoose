@@ -1,6 +1,9 @@
-
+let credential
+    
 async function getOrDie(url) {
-    const httpResponse = await fetch(url)
+    const headers = (credential) ? { "Authorization": credential }  : undefined
+
+    const httpResponse = await fetch(url, { headers })
     if (!httpResponse.ok) {
         throw new Error('Fetch for '+url+' failed: ' + httpResponse.status)
     }
@@ -8,9 +11,12 @@ async function getOrDie(url) {
 }
 
 async function postOrDie(url, body) {
+    const headers = (credential) ? { "Authorization": credential }  : undefined
+
     const httpResponse = await fetch(url, {
         method: 'post',
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
+        headers
     })
     if (!httpResponse.ok) {
         throw new Error('Fetch for '+url+' failed: ' + httpResponse.status)
@@ -33,11 +39,15 @@ export async function login(username, password) {
     if (!user) {
         throw new Error('Login failed')
     }
+    credential = 'Basic ' + btoa(`${username}:${password}`)
     return user
 }
 
 export async function logout() {
-    return await getOrDie('/api/auth/logout')
+    await getOrDie('/api/auth/logout')
+    credential = null
+    console.log('Logged out and deleted credential')
+    return
 }
 
 export async function getTractors() {
