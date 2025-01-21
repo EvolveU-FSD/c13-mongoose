@@ -1,6 +1,6 @@
 import { MongoClient } from "mongodb";
 
-const mongo_uri = process.env.MONGO_URI || 'mongodb://localhost:27017/c13-authentication'
+const mongo_uri = process.env.MONGO_URI || 'mongodb://localhost:27017/c13-tractorify'
 
 let client = null  // start disconnected
 

@@ -34,7 +34,6 @@ export async function createUser(username, password) {
         username,
         pwHash
     })
-    console.log('Inserted user ', insertResult.insertedId)
     return await findUserById(insertResult.insertedId)
 }
 

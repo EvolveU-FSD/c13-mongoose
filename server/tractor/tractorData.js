@@ -17,11 +17,10 @@ export async function findTractorById(id) {
 export async function createTractor(data) {
     const tractorCollection  = await collection('tractors')
     const insertResult = await tractorCollection.insertOne(data)
-    console.log('Inserted tractor ', insertResult.insertedId)
     return await tractorCollection.findOne({ _id: insertResult.insertedId })
 }
 
 export async function deleteAllTractors() {
     const tractorCollection  = await collection('tractors')
-    tractorCollection.deleteMany()
+    await tractorCollection.deleteMany()
 }
