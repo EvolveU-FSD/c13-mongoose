@@ -6,7 +6,6 @@ const router = Router()
 // get a particular tractor
 router.get('/:tractorId', async function (req, res) {
     const id = req.params.tractorId
-    console.log(req.params)
     try {
         const tractor = await findTractorById(id)
         if (tractor === null) {
