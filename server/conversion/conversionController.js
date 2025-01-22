@@ -9,7 +9,7 @@ router.get('/:conversionId', requireBasicAuth, async function (req, res) {
     const id = req.params.conversionId
 
     if (req.user.conversionId != id) {
-        res.sendStatus(401)
+        res.sendStatus(403)
         return
     }
 

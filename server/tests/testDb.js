@@ -10,6 +10,7 @@ import { collection, disconnectDb } from '../db.js'
 export async function cleanoutDatabase() {
     await (await collection('users')).deleteMany()
     await (await collection('tractors')).deleteMany()
+    await (await collection('conversions')).deleteMany()
 }
 
 beforeEach(async () => {

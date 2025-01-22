@@ -1,4 +1,4 @@
-import { startServer, shutdownServer } from './testServer.js'
+import { startServer, shutdownServer, doGet, doPost } from './testServer.js'
 
 import { createTractor } from '../tractor/tractorData.js'
 
@@ -44,12 +44,21 @@ describe('/api/tractor', () => {
         })
 
         // execute
-        const response = await fetch(baseUrl+'/api/tractor/' + createdTractor._id)
+        const actualTractor = await doGet(baseUrl+'/api/tractor/' + createdTractor._id)
 
         // verify
-        expect(response.ok).toEqual(true)
-        const actualTractor = await response.json()
         expect(actualTractor.name).toEqual('Bug-o-matic')
     })
 
+    it('should create a tractor', async () => {
+        // execute
+        const actual = await doPost(baseUrl+'/api/tractor', { 
+            name: "new tractor", 
+            description: "tractor description"
+        })
+
+        // verify
+        expect(actual.name).toEqual('new tractor')
+        expect(actual.description).toEqual('tractor description')
+    })
 })
