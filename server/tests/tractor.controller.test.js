@@ -50,7 +50,7 @@ describe('/api/tractor', () => {
         expect(actualTractor.name).toEqual('Bug-o-matic')
     })
 
-    it('should create a tractor', async () => {
+    it('should create a tractor in data layer', async () => {
         // execute
         const actual = await doPost(baseUrl+'/api/tractor', { 
             name: "new tractor", 
@@ -62,5 +62,26 @@ describe('/api/tractor', () => {
         expect(actual.description).toEqual('tractor description')
 
         // verify data layer here!
+        const tractorInDb = await findTractorById(actual._id)
+        expect(tractorInDb.name).toEqual("new tractor")
+        expect(tractorInDb.description).toEqual("tractor description")
     })
+
+    it('should create a tractor in api', async () => {
+        // execute
+        const actual = await doPost(baseUrl+'/api/tractor', { 
+            name: "new tractor", 
+            description: "tractor description"
+        })
+
+        // verify
+        expect(actual.name).toEqual('new tractor')
+        expect(actual.description).toEqual('tractor description')
+
+        // read it back through the api
+        const tractor = await doGet(baseUrl+'/api/tractor/'+ actual._id)
+        expect(tractor.name).toEqual("new tractor")
+        expect(tractor.description).toEqual("tractor description")
+    })
+
 })
