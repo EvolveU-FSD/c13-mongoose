@@ -12,6 +12,17 @@ describe('User data layer', () => {
         expect(createdUser.username).toEqual('tony')
     })
 
+    it('should fail to create a user without a password', async () => {
+        // execute
+        try {
+            await createUser('tony', '')
+            fail('Should not be able to create a user without a password')
+        }
+        catch (error) {
+            // happy case!!!
+        }
+    })
+
     it('should find a user by username', async () => {
         // execute
         const createdUser = await createUser('tony', '123456')
