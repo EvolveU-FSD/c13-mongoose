@@ -1,6 +1,6 @@
 import { startServer, shutdownServer, doGet, doPost } from './testServer.js'
 
-import { createTractor } from '../tractor/tractorData.js'
+import { createTractor, findTractorById } from '../tractor/tractorData.js'
 
 describe('/api/tractor', () => {
 
@@ -60,5 +60,7 @@ describe('/api/tractor', () => {
         // verify
         expect(actual.name).toEqual('new tractor')
         expect(actual.description).toEqual('tractor description')
+
+        // verify data layer here!
     })
 })
