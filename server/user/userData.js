@@ -1,56 +1,69 @@
-import { ObjectId } from "mongodb"
-import { collection } from "../db.js"
+import { connect } from '../db.js'
 import bcryptjs from 'bcryptjs'
 
+const mongoose = await connect()
+
+const userSchema = mongoose.Schema({
+    username: {
+        required: true,
+        unique: true,
+        type: String,
+    },
+    pwHash: {
+        required: true,
+        type: String,
+        select: false,
+    },
+    conversionId: mongoose.ObjectId
+}) 
+
+const User = mongoose.model("user", userSchema, "users")
+
 export async function findAllUsers() {
-    const userCollection = await collection('users')
-    const cursor = await userCollection.find({}).project({ pwHash: 0 }) // no query finds everything!
-    const users = await cursor.toArray()
-    return users
+    return await User.find()
 }
 
 export async function findUserByUsername(username) {
-    const userCollection  = await collection('users')
-    const singleUser =  await userCollection.findOne({ username }, { projection: { pwHash: 0 }})
-    return singleUser
+    return await User.findOne({ username });
 }
 
 export async function findUserById(id) {
-    const userCollection  = await collection('users')
-    const singleUser =  await userCollection.findOne({_id: new ObjectId(id)}, { projection: { pwHash: 0 }})
-    return singleUser
+    return await User.findById(id);
 }
 
 export async function createUser(username, password) {
-    const userCollection  = await collection('users')
-
-    const existingUser = await findUserByUsername(username)
-    if (existingUser) {
-        throw new Error('The user ' + username + ' already exists.')
-    }
-
-    const pwHash = bcryptjs.hashSync(password)
-    const insertResult = await userCollection.insertOne({
-        username,
-        pwHash
-    })
-    return await findUserById(insertResult.insertedId)
+    try {
+        const pwHash = bcryptjs.hashSync(password)
+        const createdUser = await User.create({
+          username,
+          pwHash,
+        })
+        return findUserById(createdUser._id)
+    } catch (error) {
+        if (error.code === 11000) {
+            throw new Error("Duplicate Username")
+        }
+    }    
 }
 
 // returns the user or null if the user is not found or the password doesn't match
 export async function checkPassword(username, password) {
-    const userCollection  = await collection('users')
-    const user =  await userCollection.findOne({ username })
-    if (bcryptjs.compareSync(password, user.pwHash))
-        return await findUserByUsername(username)
+    const user = await User.findOne({ username }).select('+pwHash')
+    if (user && bcryptjs.compareSync(password, user.pwHash)) {
+        const userData = user.toObject()
+        delete userData.pwHash
+        return userData;
+    } else {
+        return undefined;
+    }
 }
 
 export async function addConversionToUser(user, conversionId) {
-    const userCollection  = await collection('users')
-    await userCollection.updateOne({ _id: user._id }, { $set: { conversionId } })    
+    user.conversionId = conversionId
+    await user.save()
 }
 
+// please never call this on a production system.
 export async function deleteAllUsers() {
-    const userCollection  = await collection('users')
-    userCollection.deleteMany()
+    await User.deleteMany();
 }

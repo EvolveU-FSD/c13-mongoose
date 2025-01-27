@@ -5,12 +5,17 @@ if (!(dbUri.includes('test') || dbUri.includes('Test'))) {
 }
 
 export * from '../db.js'
-import { collection, disconnectDb } from '../db.js'
+
+import { deleteAllConversions } from '../conversion/conversionData.js'
+import { disconnectDb } from '../db.js'
+import { deleteAllTractors } from '../tractor/tractorData.js'
+import { deleteAllUsers } from '../user/userData.js'
 
 export async function cleanoutDatabase() {
-    await (await collection('users')).deleteMany()
-    await (await collection('tractors')).deleteMany()
-    await (await collection('conversions')).deleteMany()
+    await deleteAllUsers();
+    await deleteAllTractors();
+    await deleteAllConversions();
+
 }
 
 beforeEach(async () => {

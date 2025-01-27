@@ -1,25 +1,19 @@
-import { MongoClient } from "mongodb";
+import mongoose from "mongoose";
 
 const mongo_uri = process.env.MONGO_URI || 'mongodb://localhost:27017/c13-tractorify'
 
-let client = null  // start disconnected
+let connected = null
 
-export async function db() {
-    if (client === null) {
-        client = new MongoClient(mongo_uri)
-        await client.connect()
+export async function connect() {
+    if (!connected) {
+        connected = await mongoose.connect(mongo_uri);
     }
-    return client.db()
-}
-
-export async function collection(name) {
-    const database = await db()
-    return database.collection(name)
+    return connected
 }
 
 export async function disconnectDb() {
-    if (client) {
-        await client.close()
-        client = null
+    if (connected) {
+        await connected.connection.close()
+        connected = null
     }
 }

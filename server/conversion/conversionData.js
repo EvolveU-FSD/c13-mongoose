@@ -1,43 +1,51 @@
-import { ObjectId } from "mongodb"
-import { collection } from "../db.js"
+import { connect } from '../db.js'
 import { addConversionToUser } from "../user/userData.js"
 
+const mongoose = await connect()
+
+const conversionSchema = mongoose.Schema({
+    orderNumber: Number,
+    status: {
+        type: String,
+        required: true
+    },
+    ownerId: {
+        type: mongoose.ObjectId,
+    },
+    expectedCost: { 
+        type: Number, 
+        default: null 
+    },
+    activityLog: [ { date: String, comment: String }],
+})
+
+const Conversion = mongoose.model("conversion", conversionSchema, "conversions");
+
 export async function findAllConversions() {
-    const conversionCollection = await collection('conversions')
-    const cursor = await conversionCollection.find({}) // no query finds everything!
-    const conversions = await cursor.toArray()
-    return conversions
+    return await Conversion.find()
 }
 
 export async function findConversionById(id) {
-    const conversionCollection  = await collection('conversions')
-    const singleConversion =  await conversionCollection.findOne({_id: new ObjectId(id)})
-    return singleConversion
+    return await Conversion.findById(id)
 }
 
 export async function findConversionByOwnerId(ownerId) {
-    const conversionCollection  = await collection('conversions')
-    const singleConversion =  await conversionCollection.findOne({ ownerId })
-    return singleConversion
+    return await Converstion.findOne({ ownerId })
 }
 
 export async function createConversionForOwner(user) {
-    const conversionCollection  = await collection('conversions')
-    const insertResult = await conversionCollection.insertOne({
+    const conversion = await Conversion.create({
         orderNumber: 5,
         status: 'pending',
         ownerId: user._id,
-        expectedCost: 'unknown',
         activityLog: [
             { date: '2025-01-16', comment: 'deposit processed'}
         ]
     })
-    console.log('Inserted conversion ', insertResult.insertedId)
-    await addConversionToUser(user, insertResult.insertedId)    
-    return await conversionCollection.findOne({ _id: insertResult.insertedId })
+    await addConversionToUser(user, conversion._id) 
+    return conversion   
 }
 
 export async function deleteAllConversions() {
-    const conversionCollection  = await collection('conversions')
-    conversionCollection.deleteMany()
+    await Conversion.deleteMany()
 }

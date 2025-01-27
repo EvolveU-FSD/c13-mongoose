@@ -1,26 +1,41 @@
-import { ObjectId } from "mongodb"
-import { collection } from "../db.js"
+import { connect } from '../db.js'
+
+const mongoose = await connect()
+
+const tractorSchema = mongoose.Schema({
+    name: {
+        required: true,
+        type: String,
+    },
+    description: {
+        required: true,
+        type: String,
+    },
+    imageUrl: {
+        type: String,
+    },
+    price: {
+        type: Number,
+    },
+    review: {
+        type: String,
+    }
+})
+const Tractor = mongoose.model("tractor", tractorSchema, "tractors")
 
 export async function findAllTractors() {
-    const tractorCollection = await collection('tractors')
-    const cursor = await tractorCollection.find({}) // no query finds everything!
-    const tractors = await cursor.toArray()
-    return tractors
+    console.log('Tractors is: ', Tractor)
+    return await Tractor.find()
 }
 
 export async function findTractorById(id) {
-    const tractorCollection  = await collection('tractors')
-    const singleTractor =  await tractorCollection.findOne({_id: new ObjectId(id)})
-    return singleTractor
+    return await Tractor.findById(id)
 }
 
 export async function createTractor(data) {
-    const tractorCollection  = await collection('tractors')
-    const insertResult = await tractorCollection.insertOne(data)
-    return await tractorCollection.findOne({ _id: insertResult.insertedId })
+    return await Tractor.create(data)
 }
 
 export async function deleteAllTractors() {
-    const tractorCollection  = await collection('tractors')
-    await tractorCollection.deleteMany()
+    await Tractor.deleteMany()
 }

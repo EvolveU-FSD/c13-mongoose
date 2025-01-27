@@ -23,7 +23,7 @@ describe('/api/conversion', () => {
 
         // verify
         expect(actual.status).toEqual('pending')
-        expect(actual.expectedCost).toEqual('unknown')
+        expect(actual.expectedCost).toEqual(null)
     })
 
     it('should require login to access a conversion', async () => {

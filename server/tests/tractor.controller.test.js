@@ -31,6 +31,10 @@ describe('/api/tractor', () => {
         const tractors = await response.json()
         expect(tractors.length).toEqual(1)
         expect(tractors[0].name).toEqual('Bug-o-matic')
+        expect(tractors[0].imageUrl).toEqual('http://localhost:5173/src/assets/bug-tractor.jpg')
+        expect(tractors[0].description).toEqual('1979 Volkswagon Bug converted into a high traction hauler.')
+        expect(tractors[0].price).toEqual(15000)
+        expect(tractors[0].review).toEqual("Great on gas, my kid took it to his high school grad and they all loved it too.")
     })
 
     it('should find a tractor by id', async () => {
