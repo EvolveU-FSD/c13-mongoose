@@ -5,13 +5,13 @@ const mongoose = await connect()
 
 const userSchema = mongoose.Schema({
     username: {
+        type: String,
         required: true,
         unique: true,
-        type: String,
     },
     pwHash: {
-        required: true,
         type: String,
+        required: true,
         select: false,
     },
     conversionId: mongoose.ObjectId

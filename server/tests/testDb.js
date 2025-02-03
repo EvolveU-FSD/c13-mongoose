@@ -6,8 +6,9 @@ if (!(dbUri.includes('test') || dbUri.includes('Test'))) {
 
 export * from '../db.js'
 
-import { deleteAllConversions } from '../conversion/conversionData.js'
 import { disconnectDb } from '../db.js'
+
+import { deleteAllConversions } from '../conversion/conversionData.js'
 import { deleteAllTractors } from '../tractor/tractorData.js'
 import { deleteAllUsers } from '../user/userData.js'
 
